@@ -21,7 +21,6 @@ import json
 
 # import datetime to deal with timestamps
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
 
 # global variables
@@ -48,7 +47,7 @@ class Newuser:
                       str(self.day) + ";" + str(self.doors) + \
                       ";" + str(self.origin)
 
-    def defineage(self):
+    def defineage(self): # Определить возраст человека
         iin = self.data[2]
         year = iin[0:2]
         now = datetime.now()
@@ -67,6 +66,7 @@ class Newuser:
                 self.doors[i]["enter"][j]["key"], self.doors[i]["enter"][j]["ttl"] = \
                     doorbyid(self.doors[i]["id"], self.doors[i]["enter"][j]["name"])
     # TODO: save users in users.json
+
 
 
 # class to deal with new door
