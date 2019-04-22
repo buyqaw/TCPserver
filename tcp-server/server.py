@@ -30,9 +30,10 @@ from datetime import datetime
 
 # global variables
 print_lock = threading.Lock()
-client = MongoClient(
-    os.environ['DATABASE_PORT_27017_TCP_ADDR'],
-    27017)
+# client = MongoClient(
+#     os.environ['DATABASE_PORT_27017_TCP_ADDR'],
+#     27017)
+client = MongoClient('mongodb://database:27017/')
 db = client.buyqaw
 
 # classes
