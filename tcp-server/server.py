@@ -41,7 +41,7 @@ db = client.buyqaw
 class Newuser:
     def __init__(self, data):
         # Request from mobile app:
-        # r/o;56303h43;930423;[{"name": "Зеленый Квартал", "id": "Some ID", "enter": [{"name": "1A"}]}];BIClients
+        # r/o;56303h43;930423;[{"name": "Зеленый Квартал", "id": "555444333", "enter": [{"name": "1A"}]}];BIClients
         self.type = data[2]
         self.data = data.split(";")
         self.id = self.data[1]
@@ -108,7 +108,7 @@ class Newuser:
 # class to deal with new door
 class Newdoor:
     def __init__(self, data, days=365):
-        # Request from admin`s page is: x/a4:b4:fc:se;Name;parent_id
+        # Request from admin`s page is: x/80:e6:50:02:a3:9a;A1;555444333;parent_zone_id
         data = data.split(";")
         self.days = days
         self.id = data[0][2::]
@@ -117,6 +117,7 @@ class Newdoor:
         self.password = "060593"
         self.ttl = datetime.now().second + self.days*86400
         self.output = ''
+        self.parent_zone_id = ''
         self.register()
 
     def register(self):
@@ -172,17 +173,20 @@ class Request:
             }
             db.alarms.insert_one(item_doc)
         else:
-            result = db.users.find_one({"doors.door_id": self.door_id})
+            result = db.users.find_one({"doors.enter.door_id": self.door_id})
             if result:
+                print("Asked door with id:" + str(self.door_id) +
+                      " was found in user`s config by id: " + str(result["ID"]))
                 for buildings in result["doors"]:
                     for doors in buildings["enter"]:
                         try:
                             if doors["door_id"] == self.door_id:
-                                self.password = doors["password"]
+                                print("Door`s name is " + str(doors["name"]))
+                                self.password = doors["key"]
                                 self.ttl = doors["ttl"]
                         except:
                             pass
-        self.output += self.password + ";" + self.ttl + ";"
+        self.output += str(self.password) + ";" + str(self.ttl) + ";"
 
     def logit(self, request):  # a/!56303h43;80:e6:50:02:a3:9a;1555666261;
         request = request[3:].split(";")
