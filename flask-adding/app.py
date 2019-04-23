@@ -48,14 +48,12 @@ import json
 # import datetime to deal with timestamps
 from datetime import datetime
 
+from flask_basicauth import BasicAuth
+
 # global variables
 
-client = MongoClient(
-    os.environ['DATABASE_PORT_27017_TCP_ADDR'], 27017)
+client = MongoClient('mongodb://database:27017/')
 db = client.buyqaw
-
-UPLOAD_FOLDER = '/home/akbota/TCD/main/static/img/'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'mp4', 'mpeg4'}
 
 async_mode = None
 
@@ -66,8 +64,11 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = threading.Lock()
 
-app.config['JSON_AS_ASCII'] = False
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+app.config['BASIC_AUTH_USERNAME'] = 'cleverest'
+app.config['BASIC_AUTH_PASSWORD'] = 'The2ndlaw'
+
+basic_auth = BasicAuth(app)
 
 
 # classes
@@ -76,20 +77,27 @@ class Admin:
         self.admin = "this"
 
 
-# socket-io routes
-
-# standard version
-@socketio.on('connect', namespace='/clicked')
-def test_connect():
-    print("Socket is started")
-
-
 # app routes
 
 # index page
-@app.route('/')  # Вывод на экраны
+@app.route('/', methods=['POST', 'GET'])  # Вывод на экраны
+@basic_auth.required
 def glavnaia():
-    return render_template('welcome.html')
+    print("glavnaia")
+    if request.method == 'POST':
+        print("POST method")
+        name = request.form['name']
+        id = request.form["ID"]
+        mac = request.form["mac"]
+        item_doc = {
+            'name': name,
+            'ID': id,
+            'password': "060593",
+            'ttl': str(datetime.now().second + 365*86400),
+            'parent_id': id
+        }
+        db.doors.insert_one(item_doc)
+    return render_template('add.html')
 
 
 if __name__ == '__main__':

@@ -10,3 +10,4 @@ pprint
 Werkzeug
 flask_pymongo
 pipreqs
+flask_basicauth

@@ -16,6 +16,22 @@ services:
         max-file: "10"
     depends_on:
       - database
+  flask-add:
+    build: ./flask-adding
+    command: python3 -u ./flask-adding/app.py
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/cleverest_machine
+    links:
+      - database
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
+    depends_on:
+      - database
   database:
     image: mongo:3.0.2
     logging:
