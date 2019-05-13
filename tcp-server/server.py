@@ -244,19 +244,16 @@ def threaded(c, addr):
 
             if data[0] == "r":
                 newuser = Newuser(data)
-                c.send(newuser.output.encode('utf-8'))
-                c.send("\n".encode('utf-8'))
+                c.send(str(str(newuser.output)+"\n").encode('utf-8'))
             elif data[0] == "x":
                 newdoor = Newdoor(data)
                 c.send(newdoor.output.encode('utf-8'))
-                c.send("\n".encode('utf-8'))
             elif data[0] == "a" and data[2] == "?":
                 newreq = Request(data)
-                c.send(newreq.output.encode('utf-8'))
-                c.send("\n".encode('utf-8'))
+                c.send(str(str(newreq.output)+"\n").encode('utf-8'))
             elif data[0] == "a" and data[2] == "!":
                 try:
-                    c.send(newreq.logit(data).encode('utf-8'))
+                    c.send(str(str(newreq.logit(data))+"\n").encode('utf-8'))
                 except:
                     print("Problem here")
             else:
@@ -265,8 +262,7 @@ def threaded(c, addr):
             # connection closed
         c.close()
     except Exception as ex:
-        c.send("ERROR [505]: execution leads to internal error:".encode('utf-8'))
-        c.send(ex.encode('utf-8'))
+        c.send(str("ERROR [505]: execution leads to internal error:" + str(ex)).encode('utf-8'))
         c.close()
 
 
