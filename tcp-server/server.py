@@ -215,34 +215,38 @@ class Request:
 
 # thread function
 def threaded(c):
-    while True:
+    try:
+        while True:
 
-        # data received from client
-        data = c.recv(50000).decode('utf-8')
-        if not data:
-            print('Bye')
+            # data received from client
+            data = c.recv(50000).decode('utf-8')
+            if not data:
+                print('Bye')
 
-            # lock released on exit
-            print_lock.release()
-            break
+                # lock released on exit
+                print_lock.release()
+                break
 
-        if data[0] == "r":
-            newuser = Newuser(data)
-            c.send(newuser.output.encode('utf-8'))
-        elif data[0] == "x":
-            newdoor = Newdoor(data)
-            c.send(newdoor.output.encode('utf-8'))
-        elif data[0] == "a" and data[2] == "?":
-            newreq = Request(data)
-            c.send(newreq.output.encode('utf-8'))
-        elif data[0] == "a" and data[2] == "!":
-            try:
-                c.send(newreq.logit(data).encode('utf-8'))
-            except:
-                print("Problem here")
+            if data[0] == "r":
+                newuser = Newuser(data)
+                c.send(newuser.output.encode('utf-8'))
+            elif data[0] == "x":
+                newdoor = Newdoor(data)
+                c.send(newdoor.output.encode('utf-8'))
+            elif data[0] == "a" and data[2] == "?":
+                newreq = Request(data)
+                c.send(newreq.output.encode('utf-8'))
+            elif data[0] == "a" and data[2] == "!":
+                try:
+                    c.send(newreq.logit(data).encode('utf-8'))
+                except:
+                    print("Problem here")
 
-        # connection closed
-    c.close()
+            # connection closed
+        c.close()
+    except:
+        c.send("ERROR".encode('utf-8'))
+        c.close()
 
 
 def Main():
