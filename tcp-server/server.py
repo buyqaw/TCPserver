@@ -241,11 +241,14 @@ def threaded(c):
                     c.send(newreq.logit(data).encode('utf-8'))
                 except:
                     print("Problem here")
+            else:
+                c.send("ERROR [404]: no such command".encode('utf-8'))
 
             # connection closed
         c.close()
-    except:
-        c.send("ERROR".encode('utf-8'))
+    except Exception as ex:
+        c.send("ERROR [505]: execution leads to internal error:".encode('utf-8'))
+        c.send(ex.encode('utf-8'))
         c.close()
 
 
