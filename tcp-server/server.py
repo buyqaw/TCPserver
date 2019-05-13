@@ -33,6 +33,19 @@ print_lock = threading.Lock()
 client = MongoClient('mongodb://database:27017/')
 db = client.buyqaw
 
+
+# Functions
+def lograw(addr, data):
+    print("From: " + str(addr))
+    item_doc = {
+        'data': data,
+        'IP': addr[0],
+        'port': addr[1],
+        'date': datetime.now()
+    }
+    db.rawlog.insert_one(item_doc)
+
+
 # classes
 
 # class to deal with new user
@@ -200,7 +213,7 @@ class Request:
                 'timestamp': datetime.now()
             }
             db.alarms.insert_one(item_doc)
-            return("ERROR [HACKER]: Hacker found")
+            return("ERROR [HACKER]: Hacker found\n")
         else:
             item_doc = {
                 'user_id': self.user_id,
@@ -214,7 +227,7 @@ class Request:
 # functions
 
 # thread function
-def threaded(c):
+def threaded(c, addr):
     try:
         while True:
 
@@ -226,6 +239,8 @@ def threaded(c):
                 # lock released on exit
                 print_lock.release()
                 break
+
+            lograw(addr, data)
 
             if data[0] == "r":
                 newuser = Newuser(data)
@@ -242,7 +257,7 @@ def threaded(c):
                 except:
                     print("Problem here")
             else:
-                c.send("ERROR [404]: no such command".encode('utf-8'))
+                c.send("ERROR [404]: no such command\n".encode('utf-8'))
 
             # connection closed
         c.close()
@@ -277,7 +292,7 @@ def Main():
         print('Connected to :', addr[0], ':', addr[1])
 
         # Start a new thread and return its identifier
-        start_new_thread(threaded, (c,))
+        start_new_thread(threaded, (c, addr,))
     s.close()
 
 
