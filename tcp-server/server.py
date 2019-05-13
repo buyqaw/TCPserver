@@ -200,7 +200,7 @@ class Request:
                 'timestamp': datetime.now()
             }
             db.alarms.insert_one(item_doc)
-            return("a/!Donothackme")
+            return("ERROR [HACKER]: Hacker found")
         else:
             item_doc = {
                 'user_id': self.user_id,
