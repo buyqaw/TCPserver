@@ -228,9 +228,8 @@ class Request:
 
 # thread function
 def threaded(c, addr):
-    try:
-        while True:
-
+    while True:
+        try:
             # data received from client
             data = c.recv(50000).decode('utf-8')
             if not data:
@@ -258,12 +257,14 @@ def threaded(c, addr):
                     print("Problem here")
             else:
                 c.send("ERROR [404]: no such command\n".encode('utf-8'))
-
-            # connection closed
-        c.close()
-    except Exception as ex:
-        c.send(str("ERROR [505]: execution leads to internal error:" + str(ex)).encode('utf-8'))
-        c.close()
+                print_lock.release()
+                break
+        except Exception as ex:
+            c.send(str("ERROR [505]: execution leads to internal error:" + str(ex)).encode('utf-8'))
+            print_lock.release()
+            break
+        # connection closed
+    c.close()
 
 
 def Main():
