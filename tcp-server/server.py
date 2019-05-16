@@ -154,6 +154,14 @@ class Newdoor:
 class Request:
     def __init__(self, request):  # request in form: a/?56303h43;80:e6:50:02:a3:9a;
         if request[2] == "!":
+            self.user_id = request[0]
+            self.door_id = request[1]
+            self.password = "0"
+            self.ttl = "0"
+            self.user = ''
+            self.door = ''
+            self.output = "a/"
+            self.when = ''
             self.output = self.logit(request)
         else:
             request = request[3:].split(";")
