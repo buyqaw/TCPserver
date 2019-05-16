@@ -153,16 +153,19 @@ class Newdoor:
 
 class Request:
     def __init__(self, request):  # request in form: a/?56303h43;80:e6:50:02:a3:9a;
-        request = request[3:].split(";")
-        self.user_id = request[0]
-        self.door_id = request[1]
-        self.password = "0"
-        self.ttl = "0"
-        self.user = ''
-        self.door = ''
-        self.output = "a/"
-        self.when = ''
-        self.check()
+        if request[2] == "!":
+            self.output = self.logit(request)
+        else:
+            request = request[3:].split(";")
+            self.user_id = request[0]
+            self.door_id = request[1]
+            self.password = "0"
+            self.ttl = "0"
+            self.user = ''
+            self.door = ''
+            self.output = "a/"
+            self.when = ''
+            self.check()
 
     def check(self):
         self.door = db.doors.find_one({"ID": self.door_id})
@@ -247,14 +250,9 @@ def threaded(c, addr):
             elif data[0] == "x":
                 newdoor = Newdoor(data)
                 c.send(newdoor.output.encode('utf-8'))
-            elif data[0] == "a" and data[2] == "?":
+            elif data[0] == "a":
                 newreq = Request(data)
                 c.send(str(str(newreq.output)+"\n").encode('utf-8'))
-            elif data[0] == "a" and data[2] == "!":
-                try:
-                    c.send(str(str(newreq.logit(data))+"\n").encode('utf-8'))
-                except:
-                    print("Problem here")
             else:
                 c.send("ERROR [404]: no such command\n".encode('utf-8'))
                 print_lock.release()
