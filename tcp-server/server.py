@@ -260,7 +260,6 @@ def threaded(c, addr):
                 print_lock.release()
                 break
         except Exception as ex:
-            raise
             c.send(str("ERROR [505]: execution leads to internal error:" + str(ex)).encode('utf-8'))
             print_lock.release()
             break
