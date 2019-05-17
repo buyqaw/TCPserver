@@ -285,7 +285,7 @@ def Main():
     print("socket binded to post", port)
 
     # put the socket into listening mode
-    s.listen(50)
+    s.listen(500)
     print("socket is listening")
 
     # a forever loop until client wants to exit
@@ -303,5 +303,8 @@ def Main():
 
 
 if __name__ == '__main__':
-    Main()
-
+    while True:
+        try:
+            Main()
+        except Exception as ex:
+            print("Exception in main loop:" + str(ex))
