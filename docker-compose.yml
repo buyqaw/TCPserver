@@ -1,6 +1,7 @@
 version: "3"
 services:
   tcp-server:
+    restart: always
     build: ./tcp-server
     command: python3 -u ./tcp-server/server.py
     ports:
@@ -17,6 +18,7 @@ services:
     depends_on:
       - database
   flask-add:
+    restart: always
     build: ./flask-adding
     command: python3 -u ./flask-adding/app.py
     ports:
@@ -33,6 +35,7 @@ services:
     depends_on:
       - database
   database:
+    restart: always
     image: mongo:3.0.2
     logging:
       driver: "json-file"
@@ -40,6 +43,7 @@ services:
         max-size: "1m"
         max-file: "10"
   mongo-express:
+    restart: always
     image: mongo-express
     environment:
         - ME_CONFIG_MONGODB_SERVER=database
