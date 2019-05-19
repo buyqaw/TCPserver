@@ -266,7 +266,10 @@ def threaded(c, addr):
                 print_lock.release()
                 break
         except Exception as ex:
-            c.send(str("ERROR [505]: execution leads to internal error:" + str(ex)).encode('utf-8'))
+            try:
+                c.send(str("ERROR [505]: execution leads to internal error:" + str(ex)).encode('utf-8'))
+            except:
+                print("Already broken")
             print_lock.release()
             break
         # connection closed
